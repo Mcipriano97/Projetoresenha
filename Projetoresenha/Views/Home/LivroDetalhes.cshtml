@@ -1,0 +1,57 @@
+﻿
+@{
+    
+    ViewData["Title"] = "Detalhes do Livro";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Capa do livro -->
+        <div class="col-md-4">
+            <img src="https://via.placeholder.com/250x350" class="img-fluid rounded shadow-sm" alt="Capa do livro">
+        </div>
+
+        <!-- Informações do livro -->
+        <div class="col-md-8">
+            <h1>O Nome do Vento</h1>
+            <p><strong>Autor:</strong> Patrick Rothfuss</p>
+            <p><strong>Gênero:</strong> Fantasia</p>
+            <p><strong>Nota:</strong> ⭐⭐⭐⭐☆ (4.5)</p>
+            <hr>
+            <h4>Resenha</h4>
+            <p>
+                “O Nome do Vento” é um romance de fantasia que conta a história de Kvothe, um jovem prodígio que se torna
+                uma lenda viva. A narrativa alterna entre o presente e o passado, explorando sua infância, aventuras e os mistérios que o cercam.
+            </p>
+        </div>
+    </div>
+
+    <hr class="my-4">
+
+    <!-- Seção de comentários -->
+    <div class="comments-section mt-5">
+        <h3>Comentários dos leitores</h3>
+
+        <!-- Comentários existentes -->
+        <div class="border rounded p-3 mb-3">
+            <strong>Ana Paula</strong>
+            <p>Amei esse livro! A escrita é maravilhosa e o universo é muito bem construído.</p>
+        </div>
+
+        <div class="border rounded p-3 mb-3">
+            <strong>Lucas Silva</strong>
+            <p>Um dos melhores livros de fantasia que já li. Recomendo demais!</p>
+        </div>
+
+        <!-- Formulário para novo comentário -->
+        <form class="mt-4">
+            <div class="mb-3">
+                <label for="comentario" class="form-label">Deixe seu comentário:</label>
+                <textarea id="comentario" class="form-control" rows="3" placeholder="Escreva aqui..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar comentário</button>
+        </form>
+    </div>
+</div>
+
+}

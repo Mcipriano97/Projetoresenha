@@ -1,0 +1,111 @@
+﻿@{
+    ViewData["Title"] = "Início";
+}
+
+<section class="py-5">
+    <div class="container">
+        <div class="p-4 p-md-5 bg-white border rounded-4">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-8">
+                    <h1 class="display-5 fw-bold mb-2">Descubra, avalie e compartilhe resenhas 📚</h1>
+                    <p class="lead text-muted mb-4">
+                        Encontre seu próximo livro favorito e conte ao mundo o que achou.
+                    </p>
+                    <div class="d-flex gap-2">
+                        <a class="btn btn-success btn-lg" asp-controller="Home" asp-action="Livros">Explorar livros</a>
+                        <a class="btn btn-outline-secondary btn-lg" asp-controller="Home" asp-action="Sobre">Saiba mais</a>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="bg-light border rounded-4 p-3">
+                        <h6 class="mb-2">Busca rápida</h6>
+                        <div class="input-group">
+                            <span class="input-group-text">🔎</span>
+                            <input id="searchHome" class="form-control" placeholder="Título ou autor..." />
+                        </div>
+                        <small class="text-muted d-block mt-2">Dica: na página de livros você pode filtrar e ver notas.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-5">
+            <h5 class="mb-3">Populares da semana</h5>
+            <div class="row g-4" id="homePopular">
+                <!-- cards de exemplo; substitua por dados do seu repositório ATENÇÃOOO --> 
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 shadow-sm">
+                        <img class="card-img-top" src="https://covers.openlibrary.org/b/id/6979861-L.jpg" alt="O Hobbit">
+                        <div class="card-body">
+                            <h6 class="mb-1">O Hobbit</h6>
+                            <small class="text-muted d-block">J.R.R. Tolkien</small>
+                            <div class="mt-2"><span class="text-warning">★</span> 4.7</div>
+                        </div>
+                        <div class="card-footer bg-white border-0">
+                            <a class="btn btn-outline-primary w-100" asp-controller="Home" asp-action="LivroDetalhes" asp-route-id="1">Detalhes</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 shadow-sm">
+                        <img class="card-img-top" src="https://covers.openlibrary.org/b/id/8231851-L.jpg" alt="Dom Casmurro">
+                        <div class="card-body">
+                            <h6 class="mb-1">Dom Casmurro</h6>
+                            <small class="text-muted d-block">Machado de Assis</small>
+                            <div class="mt-2"><span class="text-warning">★</span> 4.2</div>
+                        </div>
+                        <div class="card-footer bg-white border-0">
+                            <a class="btn btn-outline-primary w-100" asp-controller="Home" asp-action="LivroDetalhes" asp-route-id="2">Detalhes</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 shadow-sm">
+                        <img class="card-img-top" src="https://covers.openlibrary.org/b/id/7222246-L.jpg" alt="1984">
+                        <div class="card-body">
+                            <h6 class="mb-1">1984</h6>
+                            <small class="text-muted d-block">George Orwell</small>
+                            <div class="mt-2"><span class="text-warning">★</span> 4.8</div>
+                        </div>
+                        <div class="card-footer bg-white border-0">
+                            <a class="btn btn-outline-primary w-100" asp-controller="Home" asp-action="LivroDetalhes" asp-route-id="3">Detalhes</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 shadow-sm">
+                        <img class="card-img-top" src="https://covers.openlibrary.org/b/id/7222241-L.jpg" alt="A Revolução dos Bichos">
+                        <div class="card-body">
+                            <h6 class="mb-1">A Revolução dos Bichos</h6>
+                            <small class="text-muted d-block">George Orwell</small>
+                            <div class="mt-2"><span class="text-warning">★</span> 4.5</div>
+                        </div>
+                        <div class="card-footer bg-white border-0">
+                            <a class="btn btn-outline-primary w-100" asp-controller="Home" asp-action="LivroDetalhes" asp-route-id="4">Detalhes</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // exemplo: filtrar os cards de populares na Home (cliente)
+        (() => {
+          const input = document.getElementById('searchHome');
+          const cards = Array.from(document.querySelectorAll('#homePopular .card'));
+          if(!input) return;
+          input.addEventListener('input', () => {
+            const q = input.value.toLowerCase();
+            cards.forEach(c => {
+              const t = c.querySelector('h6')?.textContent?.toLowerCase() ?? '';
+              const a = c.querySelector('small')?.textContent?.toLowerCase() ?? '';
+              c.parentElement.style.display = (t+a).includes(q) ? '' : 'none';
+            });
+          });
+        })();
+    </script>
+}
