@@ -1,57 +1,72 @@
-﻿
+﻿@model Projetoresenha.Models.LivroDetalhesViewModel
+
 @{
-    
-    ViewData["Title"] = "Detalhes do Livro";
+    ViewData["Title"] = Model.Titulo;
 }
 
-<div class="container mt-4">
-    <div class="row">
-        <!-- Capa do livro -->
-        <div class="col-md-4">
-            <img src="https://via.placeholder.com/250x350" class="img-fluid rounded shadow-sm" alt="Capa do livro">
-        </div>
+<h2>@Model.Titulo</h2>
+<p><strong>Autor:</strong> @Model.AutorNome</p>
 
-        <!-- Informações do livro -->
-        <div class="col-md-8">
-            <h1>O Nome do Vento</h1>
-            <p><strong>Autor:</strong> Patrick Rothfuss</p>
-            <p><strong>Gênero:</strong> Fantasia</p>
-            <p><strong>Nota:</strong> ⭐⭐⭐⭐☆ (4.5)</p>
-            <hr>
-            <h4>Resenha</h4>
-            <p>
-                “O Nome do Vento” é um romance de fantasia que conta a história de Kvothe, um jovem prodígio que se torna
-                uma lenda viva. A narrativa alterna entre o presente e o passado, explorando sua infância, aventuras e os mistérios que o cercam.
-            </p>
-        </div>
-    </div>
-
-    <hr class="my-4">
-
-    <!-- Seção de comentários -->
-    <div class="comments-section mt-5">
-        <h3>Comentários dos leitores</h3>
-
-        <!-- Comentários existentes -->
-        <div class="border rounded p-3 mb-3">
-            <strong>Ana Paula</strong>
-            <p>Amei esse livro! A escrita é maravilhosa e o universo é muito bem construído.</p>
-        </div>
-
-        <div class="border rounded p-3 mb-3">
-            <strong>Lucas Silva</strong>
-            <p>Um dos melhores livros de fantasia que já li. Recomendo demais!</p>
-        </div>
-
-        <!-- Formulário para novo comentário -->
-        <form class="mt-4">
-            <div class="mb-3">
-                <label for="comentario" class="form-label">Deixe seu comentário:</label>
-                <textarea id="comentario" class="form-control" rows="3" placeholder="Escreva aqui..."></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Enviar comentário</button>
-        </form>
-    </div>
-</div>
-
+@if (!string.IsNullOrWhiteSpace(Model.Descricao))
+{
+    <p>@Model.Descricao</p>
 }
+
+<p>
+    <strong>Nota média:</strong>
+    @(Model.NotaMedia > 0 ? Model.NotaMedia.ToString("0.0") : "Sem avaliações")
+</p>
+
+<hr />
+
+<h3>Comentários</h3>
+
+@if (Model.Resenhas != null && Model.Resenhas.Any())
+{
+    <ul class="list-group mb-4">
+        @foreach (var r in Model.Resenhas)
+        {
+            <li class="list-group-item">
+                <div>
+                    <strong>@r.UsuarioNome</strong>
+                    - nota: @r.Nota
+                    <span class="text-muted float-end">@r.Data.ToString("dd/MM/yyyy")</span>
+                </div>
+                <div>@r.Comentario</div>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>Este livro ainda não possui comentários.</p>
+}
+
+<hr />
+
+<h3>Adicionar comentário</h3>
+
+<form asp-action="Detalhes" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="NovaNota"></label>
+        <select asp-for="NovaNota" class="form-select">
+            <option value="1">1 - Péssimo</option>
+            <option value="2">2 - Ruim</option>
+            <option value="3">3 - Regular</option>
+            <option value="4">4 - Bom</option>
+            <option value="5">5 - Excelente</option>
+        </select>
+        <span asp-validation-for="NovaNota" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="NovoComentario"></label>
+        <textarea asp-for="NovoComentario" class="form-control"></textarea>
+        <span asp-validation-for="NovoComentario" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Enviar comentário</button>
+</form>

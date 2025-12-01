@@ -1,5 +1,18 @@
+using Projetoresenha.Services;
+
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddControllersWithViews();
+
+
+builder.Services.AddHttpClient("ApiResenha", client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5010/"); 
+});
+
+
+builder.Services.AddTransient<LivroApiClient>();
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -9,13 +22,15 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();          
+app.UseStaticFiles();
 
 app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Livros}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+
 
 app.Run();

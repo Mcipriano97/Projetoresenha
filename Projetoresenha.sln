@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36623.8 d17.14
+VisualStudioVersion = 17.14.36623.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Projetoresenha", "Projetoresenha\Projetoresenha.csproj", "{0ADC6C17-0422-4FCD-9504-9F8ACBBD44DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Projeto_Resenha", "..\Projeto_Resenha\Projeto_Resenha\Projeto_Resenha.csproj", "{023627A2-3A93-7B73-E042-84D90AB1BA31}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{0ADC6C17-0422-4FCD-9504-9F8ACBBD44DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0ADC6C17-0422-4FCD-9504-9F8ACBBD44DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0ADC6C17-0422-4FCD-9504-9F8ACBBD44DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{023627A2-3A93-7B73-E042-84D90AB1BA31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{023627A2-3A93-7B73-E042-84D90AB1BA31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{023627A2-3A93-7B73-E042-84D90AB1BA31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{023627A2-3A93-7B73-E042-84D90AB1BA31}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

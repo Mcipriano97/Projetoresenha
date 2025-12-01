@@ -1,62 +1,87 @@
 using Microsoft.AspNetCore.Mvc;
 using Projetoresenha.Models;
+using System.Net.Http.Json;
 
 namespace Projetoresenha.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index() => View();
+        private readonly HttpClient _httpClient;
 
-        public IActionResult Livros() => View();
+        public HomeController(IHttpClientFactory httpClientFactory)
+        {
+            // "ApiResenha" é o nome configurado no Program.cs
+            _httpClient = httpClientFactory.CreateClient("ApiResenha");
+        }
 
-        public IActionResult LivroDetalhes(int id) => View(); // depois podemos trocar por um ViewModel
-
+        // HOME / INDEX – página principal
         [HttpGet]
-        public IActionResult Login() => View(new LoginViewModel());
+        public IActionResult Index()
+        {
+            return View();
+        }
 
+        // LOGIN (GET) – mostra a tela de login
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View(new LoginViewModel());
+        }
+
+        // LOGIN (POST) – recebe o form e chama a API
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Login(LoginViewModel model)
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            // TODO: autenticar usuário (Identity, etc.)
-            // if falhar: ModelState.AddModelError("", "Credenciais inválidas"); return View(model);
-
-            return RedirectToAction("Livros");
-        }
-
-        [HttpGet]
-        public IActionResult Cadastro() => View(new CadastroViewModel());
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Cadastro(CadastroViewModel model)
-        {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            // TODO: persistir usuário e hash de senha
-            return RedirectToAction("Login");
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult PublicarResenha(ReviewViewModel model)
-        {
-            if (!ModelState.IsValid)
+            var response = await _httpClient.PostAsJsonAsync("api/usuario/login", new
             {
-                // Você pode repassar o model de volta para a página de detalhes
-                TempData["ReviewErrors"] = "Revise os campos da sua resenha.";
-                return RedirectToAction("LivroDetalhes", new { id = model.LivroId });
+                email = model.Email,
+                senha = model.Senha
+            });
+
+            if (!response.IsSuccessStatusCode)
+            {
+                ModelState.AddModelError(string.Empty, "E-mail ou senha inválidos.");
+                return View(model);
             }
 
-            // TODO: salvar resenha (LivroId, Nota, Texto, Usuario, Data)
-            return RedirectToAction("LivroDetalhes", new { id = model.LivroId });
+            return RedirectToAction("Index", "Home");
         }
 
-        public IActionResult Sobre() => View();
-        public IActionResult Privacy() => View();
+        // CADASTRO (GET) – mostra o formulário
+        [HttpGet]
+        public IActionResult Cadastro()
+        {
+            return View(new CadastroViewModel());
+        }
+
+        // CADASTRO (POST) – envia para a API
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Cadastro(CadastroViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var response = await _httpClient.PostAsJsonAsync("api/usuario/cadastro", new
+            {
+                nome = model.Nome,
+                sobrenome = model.Sobrenome,
+                email = model.Email,
+                senha = model.Senha
+            });
+
+            if (!response.IsSuccessStatusCode)
+            {
+                ModelState.AddModelError("", "Erro ao cadastrar o usuário.");
+                return View(model);
+            }
+
+            
+            return RedirectToAction("Login", "Home");
+        }
     }
 }

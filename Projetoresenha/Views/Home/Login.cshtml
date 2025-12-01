@@ -1,7 +1,8 @@
-﻿@model LoginViewModel
+﻿@model Projetoresenha.Models.LoginViewModel
 @{
     ViewData["Title"] = "Entrar";
 }
+
 <section class="py-5">
     <div class="row justify-content-center">
         <div class="col-md-5">
@@ -9,7 +10,7 @@
                 <div class="card-body p-4">
                     <h1 class="h3 mb-3">Entrar</h1>
 
-                    <form asp-action="Login" asp-controller="Home" method="post" asp-antiforgery="true" novalidate>
+                    <form asp-action="Login" asp-controller="Home" method="post">
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
 
                         <div class="mb-3">
@@ -24,20 +25,10 @@
                             <span asp-validation-for="Senha" class="text-danger"></span>
                         </div>
 
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-primary">Entrar</button>
-                            <a asp-controller="Home" asp-action="Cadastro" class="btn btn-outline-secondary">Criar conta</a>
-                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Entrar</button>
                     </form>
                 </div>
-            </div>
-            <div class="text-center mt-3">
-                <a asp-controller="Home" asp-action="Index" class="small">← Voltar</a>
             </div>
         </div>
     </div>
 </section>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

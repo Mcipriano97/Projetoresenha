@@ -1,22 +1,19 @@
-﻿@{
+﻿@model List<Projetoresenha.Models.LivroDto>
+
+@{
     ViewData["Title"] = "Livros";
-    // mock local – troque por sua lista vinda do banco/repositório ATENÇÃO 
-    var livros = new[]{
-        new { Id=1, Titulo="O Hobbit", Autor="J.R.R. Tolkien", Capa="https://covers.openlibrary.org/b/id/6979861-L.jpg", Generos=new[]{"Fantasia"}, Nota=4.7 },
-        new { Id=2, Titulo="Dom Casmurro", Autor="Machado de Assis", Capa="https://covers.openlibrary.org/b/id/8231851-L.jpg", Generos=new[]{"Clássico","Romance"}, Nota=4.2 },
-        new { Id=3, Titulo="1984", Autor="George Orwell", Capa="https://covers.openlibrary.org/b/id/7222246-L.jpg", Generos=new[]{"Distopia"}, Nota=4.8 },
-        new { Id=4, Titulo="A Revolução dos Bichos", Autor="George Orwell", Capa="https://covers.openlibrary.org/b/id/7222241-L.jpg", Generos=new[]{"Sátira"}, Nota=4.5 }
-    };
+    var livros = Model ?? new List<Projetoresenha.Models.LivroDto>();
 }
+
 
 <section class="py-4">
     <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
         <h2 class="m-0">Catálogo</h2>
-        <span class="text-muted">(@livros.Length títulos)</span>
+        <span class="text-muted">(@livros.Count títulos)</span>
         <div class="ms-auto" style="min-width: 260px;">
             <div class="input-group">
                 <span class="input-group-text">🔎</span>
-                <input id="q" class="form-control" placeholder="Buscar por título ou autor..." />
+                <input id="q" class="form-control" placeholder="Buscar por título..." />
             </div>
         </div>
     </div>
@@ -31,7 +28,6 @@
         <div class="ms-auto">
             <select id="sort" class="form-select form-select-sm">
                 <option value="titulo">Ordenar: Título (A–Z)</option>
-                <option value="nota">Ordenar: Nota (maior)</option>
             </select>
         </div>
     </div>
@@ -39,24 +35,41 @@
     <div class="row g-4" id="grid">
         @foreach (var b in livros)
         {
-            <div class="col-6 col-md-3" data-card data-title="@b.Titulo" data-author="@b.Autor" data-genres="@string.Join(',', b.Generos)" data-score="@b.Nota">
+            /*<div class="col-6 col-md-3" data-card data-title="@b.Titulo" data-genres="@b.Genero">
                 <div class="card h-100 shadow-sm">
-                    <img class="card-img-top" src="@b.Capa" alt="Capa de @b.Titulo">
                     <div class="card-body d-flex flex-column">
                         <h6 class="mb-1">@b.Titulo</h6>
-                        <small class="text-muted d-block mb-2">@b.Autor</small>
-                        <div class="mb-2">
-                            @foreach (var g in b.Generos)
-                            {
-                                <span class="badge text-bg-light border me-1">@g</span>
-                            }
+                        <small class="text-muted d-block mb-2">@b.Genero</small>
+                        <div class="mt-auto">
+                            <span class="badge text-bg-light border">@b.Genero</span>
                         </div>
-                        <div class="mt-auto"><span class="text-warning">★</span> @b.Nota.ToString("0.0")</div>
-                    </div>
-                    <div class="card-footer bg-white border-0">
-                        <a class="btn btn-outline-primary w-100" asp-controller="Home" asp-action="LivroDetalhes" asp-route-id="@b.Id">Detalhes</a>
                     </div>
                 </div>
+            </div>*/
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h6 class="mb-1">@b.Titulo</h6>
+                    <small class="text-muted d-block mb-2">@b.Genero</small>
+                    <div class="mt-auto">
+                        <span class="badge text-bg-light border">@b.Genero</span>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-0">
+                    <a class="btn btn-outline-primary w-100"
+                       asp-controller="Home"
+                       asp-action="LivroDetalhes"
+                       asp-route-id="@b.Pkid_livro">
+                        Ver detalhes
+                    </a>
+                </div>
+            </div>
+
+        }
+
+        @if (!livros.Any())
+        {
+            <div class="col-12 text-muted">
+                Nenhum livro cadastrado ainda.
             </div>
         }
     </div>
@@ -64,54 +77,48 @@
 
 @section Scripts {
     <script>
-        // busca por título/autor
         (() => {
-          const q = document.getElementById('q');
-          const cards = [...document.querySelectorAll('[data-card]')];
-          const filterBtns = [...document.querySelectorAll('.filter')];
-          const sortSel = document.getElementById('sort');
+            const q = document.getElementById('q');
+            const cards = [...document.querySelectorAll('[data-card]')];
+            const filterBtns = [...document.querySelectorAll('.filter')];
+            const sortSel = document.getElementById('sort');
 
-          let genre = '*';
+            let genre = '*';
 
-          function apply() {
-            const term = (q.value || '').toLowerCase().trim();
-            let list = cards.slice();
+            function apply() {
+                const term = (q.value || '').toLowerCase().trim();
+                let list = cards.slice();
 
-            // filtro por gênero
-            if (genre !== '*') {
-              list = list.filter(c => (c.dataset.genres || '').split(',').includes(genre));
+                // filtro por gênero
+                if (genre !== '*') {
+                    list = list.filter(c => (c.dataset.genres || '').toLowerCase().includes(genre.toLowerCase()));
+                }
+
+                // filtro por texto (título)
+                if (term) {
+                    list = list.filter(c => (c.dataset.title || '').toLowerCase().includes(term));
+                }
+
+                // ordenação (por título)
+                list.sort((a, b) => (a.dataset.title || '').localeCompare(b.dataset.title || ''));
+
+                const grid = document.getElementById('grid');
+                cards.forEach(c => c.style.display = 'none');
+                list.forEach(c => { c.style.display = ''; grid.appendChild(c); });
             }
 
-            // filtro por texto
-            if (term) {
-              list = list.filter(c => (c.dataset.title + ' ' + c.dataset.author).toLowerCase().includes(term));
-            }
+            q?.addEventListener('input', apply);
+            sortSel?.addEventListener('change', apply);
 
-            // ordenação
-            if (sortSel.value === 'nota') {
-              list.sort((a,b) => parseFloat(b.dataset.score) - parseFloat(a.dataset.score));
-            } else {
-              list.sort((a,b) => (a.dataset.title || '').localeCompare(b.dataset.title || ''));
-            }
+            filterBtns.forEach(btn => btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                genre = btn.dataset.genre;
+                apply();
+            }));
 
-            // render simples: esconder/mostrar e ordenar na DOM
-            const grid = document.getElementById('grid');
-            cards.forEach(c => c.style.display = 'none');
-            list.forEach(c => { c.style.display = ''; grid.appendChild(c); });
-          }
-
-          q?.addEventListener('input', apply);
-          sortSel?.addEventListener('change', apply);
-          filterBtns.forEach(btn => btn.addEventListener('click', () => {
-            filterBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            genre = btn.dataset.genre;
+            document.querySelector('.filter[data-genre="*"]')?.classList.add('active');
             apply();
-          }));
-
-          // estado inicial
-          document.querySelector('.filter[data-genre="*"]')?.classList.add('active');
-          apply();
         })();
     </script>
 }
